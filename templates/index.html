@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blockchain Cloud Storage</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Blockchain Cloud Storage</h1>
+
+    <h2>Upload a File</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data" target="_blank">
+        <input type="file" name="file">
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Stored Files</h2>
+    <button onclick="fetchFiles()">View Files</button>
+    <ul id="fileList"></ul>
+
+    <script>
+        function fetchFiles() {
+            fetch('/files')
+                .then(response => response.json())
+                .then(data => {
+                    const fileList = document.getElementById('fileList');
+                    fileList.innerHTML = ""; 
+                    for (let file in data) {
+                        let li = document.createElement("li");
+                        li.innerText = file;
+                        
+                        let downloadBtn = document.createElement("button");
+                        downloadBtn.innerText = "Download";
+                        downloadBtn.onclick = function() {
+                            window.location.href = `/download/${file}`;
+                        };
+
+                        li.appendChild(downloadBtn);
+                        fileList.appendChild(li);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching files:", error);
+                });
+        }
+    </script>
+</body>
+</html>
