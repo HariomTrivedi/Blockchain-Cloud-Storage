@@ -3,7 +3,8 @@ from blockchain import Blockchain
 from file_utils import split_file
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
+
 
 # Initialize Blockchain
 blockchain = Blockchain()
