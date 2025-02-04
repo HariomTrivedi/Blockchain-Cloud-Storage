@@ -38,7 +38,6 @@ def upload_file():
 
 @app.route("/files", methods=["GET"])
 def list_files():
-    """Return a list of stored files from blockchain"""
     file_map = {}
 
     for block in blockchain.chain:
@@ -52,13 +51,12 @@ def list_files():
 
 @app.route("/download/<file_name>", methods=["GET"])
 def download_file(file_name):
-    """Reconstruct and download a file from blockchain transactions"""
     file_chunks = []
 
     for block in blockchain.chain:
         for tx in block.transactions:
             if tx["file_name"] == file_name:
-                file_chunks.append((tx["chunk_index"], bytes.fromhex(tx["chunk"])))  
+                file_chunks.append((tx["chunk_index"], bytes.fromhex(tx["chunk"])))  # Convert hex back to binary
 
     if not file_chunks:
         return jsonify({"error": "File not found"}), 404
@@ -66,7 +64,7 @@ def download_file(file_name):
     file_chunks.sort()  # Sort by chunk index
     file_data = b"".join(chunk[1] for chunk in file_chunks)
 
-    # Save the reconstructed file
+    # Save the reconstructed file to the upload folder
     file_path = os.path.join(UPLOAD_FOLDER, file_name)
     with open(file_path, "wb") as f:
         f.write(file_data)
